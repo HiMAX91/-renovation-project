@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>裂縫深淵 啟動器</title>
+  <title>裂縫深淵 啟動器 (液態玻璃測試版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -41,6 +41,7 @@
     .liquid-glass {
       position: relative;
       overflow: hidden; /* 防止內部流動光澤溢出卡片 */
+      /* 絕對清透：利用極低不透明度的白光漸層，拒絕任何 blur 模糊 */
       background: linear-gradient(
         135deg, 
         rgba(255, 255, 255, 0.12) 0%, 
@@ -53,7 +54,7 @@
       border-radius: 1.5rem; /* 加大圓角，讓視覺更溫和現代 */
     }
 
-    /* 邊緣畸變層 */
+    /* 邊緣畸變層：利用對比濾鏡與遮罩，僅在邊緣 2px 產生折射變異 */
     .liquid-glass::after {
       content: '';
       position: absolute;
@@ -70,7 +71,7 @@
       pointer-events: none;
     }
 
-    /* 表面流動光澤 */
+    /* 表面流動光澤：斜向的光斑刷過表面 */
     .liquid-glass::before {
       content: '';
       position: absolute;
@@ -87,11 +88,23 @@
       transform: skewX(-20deg);
       pointer-events: none;
     }
+
+    /* 測試光球的移動動畫 */
+    @keyframes sweepLight {
+      0% { transform: translateX(-20vw) scale(0.8); }
+      100% { transform: translateX(80vw) scale(1.2); }
+    }
   </style>
 </head>
-<body class="bg-gradient-to-br from-neutral-950 via-slate-900 to-black text-neutral-100 font-sans h-full flex flex-col select-none overflow-hidden">
+<body class="bg-[#0a0a0c] text-neutral-100 font-sans h-full flex flex-col select-none overflow-hidden relative z-0">
 
-  <header class="bg-header-900/80 backdrop-blur-md text-header-text border-b border-header-800 px-4 sm:px-6 py-4 flex items-center justify-between shadow-md z-20 flex-shrink-0 rounded-b-3xl">
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    
+    <div class="absolute top-1/4 left-0 w-[40vw] h-[40vw] bg-brandYellow-500/60 rounded-full blur-[80px]" style="animation: sweepLight 5s infinite alternate ease-in-out;"></div>
+  </div>
+
+  <header class="bg-header-900/80 backdrop-blur-md text-header-text border-b border-header-800 px-4 sm:px-6 py-4 flex items-center justify-between shadow-md z-20 flex-shrink-0 rounded-t-3xl mt-2 mx-2">
     <div class="flex items-center space-x-3">
       <button onclick="toggleSidebar(true)" class="lg:hidden text-white hover:text-brandYellow-400 p-1.5 rounded-xl focus:outline-none transition cursor-pointer" title="開啟選單">
         <i class="fa-solid fa-bars text-lg"></i>
@@ -107,7 +120,7 @@
     </div>
   </header>
 
-  <div class="flex-1 flex relative overflow-hidden">
+  <div class="flex-1 flex relative overflow-hidden px-2 pb-2">
     <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/70 z-30 hidden transition-opacity duration-300 opacity-0 lg:hidden"></div>
 
     <aside id="large-sidebar" class="fixed inset-y-0 left-0 w-72 sm:w-80 bg-neutral-950/95 border-r border-neutral-800 z-40 transform -translate-x-full lg:translate-x-0 lg:static lg:w-72 xl:w-80 flex-shrink-0 flex flex-col justify-between transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none text-neutral-300 rounded-r-3xl overflow-hidden">
@@ -192,7 +205,7 @@
   </div>
 
   <div id="game-player-screen" class="fixed inset-0 bg-black z-50 flex flex-col hidden transition-all duration-300">
-    <div class="h-14 bg-header-900 border-b border-header-800 flex items-center justify-between px-3 sm:px-4 z-10 text-header-text flex-shrink-0 rounded-b-2xl">
+    <div class="h-14 bg-header-900 border-b border-header-800 flex items-center justify-between px-3 sm:px-4 z-10 text-header-text flex-shrink-0 rounded-b-2xl mt-2 mx-2">
       <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
         <span id="player-game-title" class="font-bold text-white text-xs sm:text-sm tracking-wide truncate max-w-[120px] sm:max-w-[240px]">載入中...</span>
         <span id="player-game-version-badge" class="text-[10px] bg-header-800 px-2 py-1 rounded-lg text-gray-300 font-mono flex-shrink-0">v0.0</span>
@@ -204,7 +217,7 @@
         </button>
       </div>
     </div>
-    <div class="flex-1 bg-black relative flex items-center justify-center min-h-0">
+    <div class="flex-1 bg-black relative flex items-center justify-center min-h-0 mx-2 mb-2 rounded-2xl overflow-hidden">
       <div id="player-loading-overlay" class="absolute inset-0 bg-neutral-900 flex flex-col items-center justify-center space-y-4 z-20">
         <div class="w-10 h-10 border-4 border-brandYellow-500 border-t-transparent rounded-full animate-spin"></div>
         <p class="text-xs text-gray-400">正在加載遊戲與引擎資源...</p>
