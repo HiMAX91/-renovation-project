@@ -37,40 +37,39 @@
       scrollbar-width: none;
     }
 
-    /* ================= Apple 風格 3D 曲面液態玻璃 (極致通透版) ================= */
+    /* ================= 極致清透液態玻璃 ================= */
     .liquid-glass {
       position: relative;
       overflow: hidden;
       
-      /* 更通透的漸層底色，降低白霧感 */
+      /* 極低透明度底色，提升通透感 */
       background: linear-gradient(
         135deg, 
-        rgba(255, 255, 255, 0.15) 0%, 
-        rgba(255, 255, 255, 0.02) 100%
+        rgba(255, 255, 255, 0.06) 0%, 
+        rgba(255, 255, 255, 0.0) 100%
       );
 
-      /* 3D 凸透鏡光影：左上極亮高光 + 右下深色內陰影，創造厚實的膠囊感 */
+      /* 拔除厚重高光！只保留最細的 1px 邊緣光澤與柔和陰影 */
       box-shadow: 
-        inset 2px 2px 4px rgba(255, 255, 255, 0.8),
-        inset -3px -3px 6px rgba(0, 0, 0, 0.3),
-        inset 6px 6px 15px rgba(255, 255, 255, 0.2),
-        0 15px 35px rgba(0, 0, 0, 0.4);
+        inset 1px 1px 1px rgba(255, 255, 255, 0.4),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.1),
+        0 10px 30px rgba(0, 0, 0, 0.4);
 
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 2rem; 
       
-      /* 降低模糊度增加清透感，保留高飽和度與對比度以確保文字易讀性 */
-      backdrop-filter: blur(8px) saturate(180%) contrast(110%);
-      -webkit-backdrop-filter: blur(8px) saturate(180%) contrast(110%);
+      /* 大幅降低模糊度(blur)，保留高對比以確保內部文字清晰 */
+      backdrop-filter: blur(4px) saturate(150%) contrast(105%);
+      -webkit-backdrop-filter: blur(4px) saturate(150%) contrast(105%);
     }
 
-    /* 光球 1 的順暢呼吸漂浮動畫 */
+    /* 光球 1 呼吸漂浮動畫 */
     @keyframes floatDrift1 {
       0%, 100% { transform: translate(0, 0) scale(0.9); }
       50% { transform: translate(35vw, -15vh) scale(1.1); }
     }
     
-    /* 光球 2 的順暢呼吸漂浮動畫 */
+    /* 光球 2 呼吸漂浮動畫 */
     @keyframes floatDrift2 {
       0%, 100% { transform: translate(0, 0) scale(1.1); }
       50% { transform: translate(-30vw, 20vh) scale(0.9); }
@@ -161,7 +160,7 @@
         <div class="md:col-span-5 liquid-glass p-5 sm:p-6 lg:p-8 flex flex-col justify-center items-center text-center relative overflow-hidden min-h-[200px] sm:min-h-[220px] md:min-h-auto text-white">
           <div class="absolute -right-6 -bottom-6 opacity-[0.04] text-[100px] sm:text-[150px] pointer-events-none text-white"><i class="fa-solid fa-gamepad"></i></div>
 
-          <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-3xl bg-white/5 flex items-center justify-center text-brandYellow-500 mb-3 sm:mb-4 shadow-inner border border-white/10 backdrop-blur-sm">
+          <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-3xl bg-white/5 flex items-center justify-center text-brandYellow-500 mb-3 sm:mb-4 shadow-inner border border-white/10">
             <i class="fa-solid fa-rocket text-xl sm:text-2xl drop-shadow-md"></i>
           </div>
 
@@ -171,7 +170,7 @@
             <span id="launch-card-ver-tag" class="inline-block text-[9px] sm:text-[10px] font-mono bg-white/10 px-2 py-0.5 rounded-lg text-white/80 border border-white/20 font-semibold mt-1">v0.0.0</span>
           </div>
 
-          <button onclick="launchGame()" class="w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-brandYellow-500 hover:bg-brandYellow-400 text-neutral-900 font-extrabold rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] transition-all transform active:scale-95 flex items-center justify-center space-x-2 sm:space-x-2.5 text-sm sm:text-base lg:text-lg z-10 cursor-pointer">
+          <button onclick="launchGame()" class="w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-brandYellow-500 active:bg-brandYellow-600 text-neutral-900 font-extrabold rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all transform active:scale-95 flex items-center justify-center space-x-2 sm:space-x-2.5 text-sm sm:text-base lg:text-lg z-30 relative cursor-pointer touch-manipulation">
             <i class="fa-solid fa-circle-play text-lg sm:text-xl"></i>
             <span>開始遊戲</span>
           </button>
@@ -183,14 +182,14 @@
     </main>
   </div>
 
-  <div id="game-player-screen" class="fixed inset-0 bg-black z-50 flex flex-col hidden transition-all duration-300 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+  <div id="game-player-screen" class="fixed inset-0 bg-black z-50 flex flex-col transition-all duration-500 ease-out opacity-0 pointer-events-none translate-y-10 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
     <div class="h-12 sm:h-14 bg-header-900 border-b border-header-800 flex items-center justify-between px-3 sm:px-4 z-10 text-header-text flex-shrink-0 rounded-b-xl sm:rounded-b-2xl mt-1 sm:mt-2 mx-1 sm:mx-2 pt-[env(safe-area-inset-top)]">
       <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
         <span id="player-game-title" class="font-bold text-white text-[11px] sm:text-sm tracking-wide truncate max-w-[150px] sm:max-w-[240px]">載入中...</span>
         <span id="player-game-version-badge" class="text-[9px] sm:text-[10px] bg-header-800 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-gray-300 font-mono flex-shrink-0">v0.0</span>
       </div>
       <div class="flex items-center space-x-1.5 sm:space-x-2">
-        <button onclick="closeGamePlayer()" class="bg-red-950 hover:bg-red-900 text-red-200 hover:text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center space-x-1.5">
+        <button onclick="closeGamePlayer()" class="bg-red-950 hover:bg-red-900 text-red-200 hover:text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center space-x-1.5 cursor-pointer touch-manipulation">
           <i class="fa-solid fa-power-off"></i>
           <span>結束</span>
         </button>
@@ -249,9 +248,9 @@
         btn.onclick = () => selectVersion(ver.id);
         
         if (isActive) {
-          btn.className = "w-full flex flex-col text-left p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-neutral-800 bg-neutral-900 shadow-sm text-white font-bold border-l-4 border-l-brandYellow-500 transition-all cursor-pointer flex-shrink-0";
+          btn.className = "w-full flex flex-col text-left p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-neutral-800 bg-neutral-900 shadow-sm text-white font-bold border-l-4 border-l-brandYellow-500 transition-all cursor-pointer flex-shrink-0 touch-manipulation";
         } else {
-          btn.className = "w-full flex flex-col text-left p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-transparent bg-transparent hover:bg-neutral-800/50 text-neutral-400 hover:text-white transition-all cursor-pointer flex-shrink-0";
+          btn.className = "w-full flex flex-col text-left p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-transparent bg-transparent hover:bg-neutral-800/50 text-neutral-400 hover:text-white transition-all cursor-pointer flex-shrink-0 touch-manipulation";
         }
 
         btn.innerHTML = `
@@ -343,6 +342,7 @@
       }
     }
 
+    // 動畫觸發：開啟遊戲
     function launchGame() {
       const ver = GAME_VERSIONS.find(v => v.id === selectedVersionId);
       if (!ver) {
@@ -372,13 +372,31 @@
         document.getElementById("player-loading-overlay").classList.add("hidden");
       };
 
-      document.getElementById("game-player-screen").classList.remove("hidden");
+      // 觸發淡入並往上浮現的動畫
+      const playerScreen = document.getElementById("game-player-screen");
+      playerScreen.classList.remove("hidden");
+      
+      // 使用很短的延遲確保 CSS transition 能被正確觸發
+      setTimeout(() => {
+        playerScreen.classList.remove("opacity-0", "pointer-events-none", "translate-y-10");
+        playerScreen.classList.add("opacity-100", "pointer-events-auto", "translate-y-0");
+      }, 10);
     }
 
+    // 動畫觸發：關閉遊戲
     function closeGamePlayer() {
-      document.getElementById("game-player-screen").classList.add("hidden");
-      document.getElementById("turbowarp-iframe").src = "about:blank";
-      showToast("已關閉遊戲", "期待您的下次遊玩！");
+      const playerScreen = document.getElementById("game-player-screen");
+      
+      // 觸發淡出並往下沉的動畫
+      playerScreen.classList.remove("opacity-100", "pointer-events-auto", "translate-y-0");
+      playerScreen.classList.add("opacity-0", "pointer-events-none", "translate-y-10");
+      
+      // 等待動畫播放完畢 (500ms) 後，再將畫面清空隱藏
+      setTimeout(() => {
+        playerScreen.classList.add("hidden");
+        document.getElementById("turbowarp-iframe").src = "about:blank";
+        showToast("已關閉遊戲", "期待您的下次遊玩！");
+      }, 500);
     }
 
     let toastTimeout = null;
