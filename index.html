@@ -37,40 +37,39 @@
       scrollbar-width: none;
     }
 
-    /* ================= 液態玻璃核心樣式 ================= */
+    /* ================= 蘋果風液態玻璃核心 (強調曲面厚度與折射) ================= */
     .liquid-glass {
       position: relative;
       overflow: hidden;
+      
+      /* 基礎清透底色 */
       background: linear-gradient(
         135deg, 
-        rgba(255, 255, 255, 0.12) 0%, 
-        rgba(255, 255, 255, 0.02) 100%
+        rgba(255, 255, 255, 0.25) 0%, 
+        rgba(255, 255, 255, 0.05) 100%
       );
+
+      /* 核心技術：用多層光影堆疊出「凸透鏡」的 3D 畸變感 */
       box-shadow: 
-        inset 1px 1px 1px rgba(255, 255, 255, 0.6),
-        inset -1px -1px 2px rgba(255, 255, 255, 0.05),
-        0 10px 40px rgba(0, 0, 0, 0.3);
-      border-radius: 1.5rem;
+        /* 1. 左上角強烈邊緣高光 (模擬曲面受光) */
+        inset 2px 2px 5px rgba(255, 255, 255, 0.9),
+        inset 6px 6px 15px rgba(255, 255, 255, 0.3),
+        /* 2. 右下角深色內陰影 (創造玻璃厚度與實體感) */
+        inset -3px -3px 8px rgba(0, 0, 0, 0.4),
+        /* 3. 實體懸浮陰影 */
+        0 12px 32px rgba(0, 0, 0, 0.4);
+
+      /* 清脆的外殼邊線 */
+      border: 1px solid rgba(255, 255, 255, 0.4);
+
+      /* 折射底層：不使用模糊，單純強化背後顏色的飽和度與對比度來模擬光學變化 */
+      backdrop-filter: saturate(180%) contrast(130%) brightness(110%);
+      
+      /* 膠囊般的極致圓角 */
+      border-radius: 2rem; 
     }
 
-    /* 邊緣畸變層 */
-    .liquid-glass::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      backdrop-filter: contrast(1.3) saturate(1.2) brightness(0.9);
-      padding: 2px; 
-      background: transparent;
-      -webkit-mask: 
-        linear-gradient(#fff 0 0) content-box, 
-        linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
-
-    /* 表面流動光澤 */
+    /* 表面流動光澤 (增添反光質感) */
     .liquid-glass::before {
       content: '';
       position: absolute;
@@ -81,7 +80,7 @@
       background: linear-gradient(
         to right, 
         rgba(255,255,255,0) 0%, 
-        rgba(255,255,255,0.15) 50%, 
+        rgba(255,255,255,0.2) 50%, 
         rgba(255,255,255,0) 100%
       );
       transform: skewX(-20deg);
