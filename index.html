@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>裂縫深淵 啟動器</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            header: {
+              900: '#1e2022',
+              800: '#2d3135',
+              700: '#3f4448',
+              text: '#f1f2f3'
+            },
+            brandYellow: {
+              400: '#fcd34d',
+              500: '#f59e0b',
+              600: '#d97706'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 隱藏滾動條但保留功能 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* ================= 液態玻璃核心樣式 ================= */
+    /* 1. 絕對清透：利用極低不透明度的白光漸層，拒絕任何 blur 模糊 */
+    .liquid-glass {
+      position: relative;
+      background: linear-gradient(
+        135deg, 
+        rgba(255, 255, 255, 0.12) 0%, 
+        rgba(255, 255, 255, 0.02) 100%
+      );
+      /* 2. 環境高光與厚度陰影：模擬實體玻璃的光影折射 */
+      box-shadow: 
+        inset 1px 1px 1px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 2px rgba(255, 255, 255, 0.05),
+        0 10px 40px rgba(0, 0, 0, 0.3);
+      border-radius: 1rem;
+    }
+
+    /* 3. 邊緣畸變層：利用對比濾鏡與遮罩，僅在邊緣 2px 產生折射變異 */
+    .liquid-glass::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      backdrop-filter: contrast(1.3) saturate(1.2) brightness(0.9);
+      padding: 2px; 
+      background: transparent;
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* 4. 表面流動光澤：斜向的光斑刷過表面 */
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        to right, 
+        rgba(255,255,255,0) 0%, 
+        rgba(255,255,255,0.15) 50%, 
+        rgba(255,255,255,0) 100%
+      );
+      transform: skewX(-20deg);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-neutral-950 via-slate-900 to-black text-neutral-100 font-sans h-full flex flex-col select-none overflow-hidden">
+
+  <header class="bg-header-900/80 backdrop-blur-md text-header-text border-b border-header-800 px-4 sm:px-6 py-4 flex items-center justify-between shadow-md z-20 flex-shrink-0">
+    <div class="flex items-center space-x-3">
+      <button onclick="toggleSidebar(true)" class="lg:hidden text-white hover:text-brandYellow-400 p-1.5 rounded-lg focus:outline-none transition cursor-pointer" title="開啟選單">
+        <i class="fa-solid fa-bars text-lg"></i>
+      </button>
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded bg-gradient-to-br from-header-700 to-header-800 flex items-center justify-center text-brandYellow-400 text-sm shadow">
+          <i class="fa-solid fa-gamepad"></i>
+        </div>
+        <div>
+          <h1 class="font-bold tracking-wider text-sm sm:text-base text-white">裂縫深淵</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex-1 flex relative overflow-hidden">
+    <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/70 z-30 hidden transition-opacity duration-300 opacity-0 lg:hidden"></div>
+
+    <aside id="large-sidebar" class="fixed inset-y-0 left-0 w-72 sm:w-80 bg-neutral-950/95 border-r border-neutral-800 z-40 transform -translate-x-full lg:translate-x-0 lg:static lg:w-72 xl:w-80 flex-shrink-0 flex flex-col justify-between transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none text-neutral-300">
+      <div class="p-5 border-b border-neutral-800 flex flex-col space-y-4 flex-shrink-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-code-branch text-brandYellow-500 text-sm"></i>
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider">選擇遊戲版本</h3>
+          </div>
+          <button onclick="toggleSidebar(false)" class="lg:hidden text-neutral-400 hover:text-white p-1 rounded-lg transition cursor-pointer" title="關閉選單">
+            <i class="fa-solid fa-xmark text-md"></i>
+          </button>
+        </div>
+        <p class="text-[11px] text-neutral-400 leading-relaxed">請在下方選單中點選遊戲版本，啟動器將會自動讀取 GitHub 儲存庫對應的檔案路徑。</p>
+      </div>
+
+      <div id="version-sidebar-container" class="flex-1 overflow-y-auto p-4 space-y-2.5 no-scrollbar bg-neutral-900/20">
+        </div>
+
+      <div class="p-4 bg-neutral-950 border-t border-neutral-800 text-center text-[10px] text-neutral-500 flex-shrink-0">
+        <p>© 2026 裂縫深淵</p>
+        <p class="mt-0.5">基於 GitHub Pages 相對路徑建構</p>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto flex flex-col items-center">
+      <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6 items-stretch my-auto py-2 sm:py-4 relative z-10">
+        
+        <div class="md:col-span-7 liquid-glass p-5 sm:p-6 flex flex-col justify-between space-y-5 text-white">
+          <div>
+            <div class="pb-3.5 border-b border-white/20">
+              <h2 class="text-base sm:text-lg font-bold flex items-center space-x-2">
+                <i class="fa-solid fa-circle-info text-white/70"></i>
+                <span>遊戲版本介紹</span>
+              </h2>
+            </div>
+
+            <div class="mt-4 space-y-3.5">
+              <div class="flex items-center space-x-2 flex-wrap gap-y-1">
+                <span id="display-version-title" class="text-sm sm:text-md font-bold text-white">載入中...</span>
+                <span id="display-version-branch" class="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-bold bg-white/10 border border-white/20 text-white/90">分支</span>
+              </div>
+              
+              <div class="bg-black/20 rounded-xl p-3.5 sm:p-4 border border-white/10 shadow-inner">
+                <h4 class="text-[11px] sm:text-xs font-bold text-white/90 uppercase tracking-wide mb-2">更新說明與更動項目：</h4>
+                <ul id="display-version-changelog" class="list-disc pl-5 text-xs text-white/70 space-y-1.5 leading-relaxed">
+                  </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[10px] sm:text-[11px] text-white/50 pt-3.5 border-t border-white/20 flex items-center space-x-1.5 flex-wrap gap-y-1">
+            <i class="fa-solid fa-folder-open text-brandYellow-500"></i>
+            <span id="display-version-path" class="font-mono bg-black/30 px-1.5 py-0.5 rounded text-[10px] text-white/70">路徑：--</span>
+            <span id="display-version-date" class="ml-auto text-[10px]">更新日期：----/--/--</span>
+          </div>
+        </div>
+
+        <div class="md:col-span-5 liquid-glass p-6 sm:p-8 flex flex-col justify-center items-center text-center relative overflow-hidden min-h-[220px] md:min-h-auto text-white">
+          <div class="absolute -right-8 -bottom-8 opacity-[0.05] text-[120px] sm:text-[150px] pointer-events-none text-white"><i class="fa-solid fa-gamepad"></i></div>
+
+          <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white/5 flex items-center justify-center text-brandYellow-500 mb-3 sm:mb-4 shadow-inner border border-white/10 backdrop-blur-sm">
+            <i class="fa-solid fa-rocket text-xl sm:text-2xl drop-shadow-md"></i>
+          </div>
+
+          <div class="space-y-1 mb-6 sm:mb-8 z-10">
+            <h3 class="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest">當前選擇版本</h3>
+            <p id="launch-card-ver-name" class="text-sm sm:text-md font-bold text-white truncate max-w-[200px] sm:max-w-[240px]">載入中...</p>
+            <span id="launch-card-ver-tag" class="inline-block text-[9px] sm:text-[10px] font-mono bg-white/10 px-2 py-0.5 rounded text-white/80 border border-white/20 font-semibold mt-1">v0.0.0</span>
+          </div>
+
+          <button onclick="launchGame()" class="w-full py-3.5 px-6 bg-brandYellow-500 hover:bg-brandYellow-400 text-neutral-900 font-extrabold rounded-xl shadow-[0_0_15px_rgba(245,158,11,0.4)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] transition-all transform active:scale-95 flex items-center justify-center space-x-2.5 text-base sm:text-lg z-10 cursor-pointer">
+            <i class="fa-solid fa-circle-play text-lg sm:text-xl"></i>
+            <span>開始遊戲</span>
+          </button>
+
+          <p class="text-[9px] sm:text-[10px] text-white/40 mt-3.5 z-10">點擊後將直接啟動遊戲檔案</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <div id="game-player-screen" class="fixed inset-0 bg-black z-50 flex flex-col hidden transition-all duration-300">
+    <div class="h-14 bg-header-900 border-b border-header-800 flex items-center justify-between px-3 sm:px-4 z-10 text-header-text flex-shrink-0">
+      <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+        <span id="player-game-title" class="font-bold text-white text-xs sm:text-sm tracking-wide truncate max-w-[120px] sm:max-w-[240px]">載入中...</span>
+        <span id="player-game-version-badge" class="text-[10px] bg-header-800 px-1.5 py-0.5 rounded text-gray-300 font-mono flex-shrink-0">v0.0</span>
+      </div>
+      <div class="flex items-center space-x-1.5 sm:space-x-2">
+        <button onclick="closeGamePlayer()" class="bg-red-950 hover:bg-red-900 text-red-200 hover:text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5">
+          <i class="fa-solid fa-power-off"></i>
+          <span class="hidden xs:inline">結束</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex-1 bg-black relative flex items-center justify-center min-h-0">
+      <div id="player-loading-overlay" class="absolute inset-0 bg-neutral-900 flex flex-col items-center justify-center space-y-4 z-20">
+        <div class="w-10 h-10 border-4 border-brandYellow-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-xs text-gray-400">正在加載遊戲與引擎資源...</p>
+      </div>
+      <iframe id="turbowarp-iframe" class="w-full h-full border-0" allowtransparency="true" allowfullscreen="true" allow="autoplay; gamepad; camera; microphone"></iframe>
+    </div>
+  </div>
+
+  <div id="custom-toast" class="fixed bottom-6 right-6 left-6 sm:left-auto liquid-glass border border-white/20 shadow-2xl p-4 flex items-center space-x-3 translate-y-24 opacity-0 transition-all duration-300 z-50 text-white max-w-sm">
+    <div id="toast-icon-wrapper" class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 bg-brandYellow-500 text-header-900">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <div>
+      <h4 id="toast-title" class="font-bold text-xs text-white">通知</h4>
+      <p id="toast-desc" class="text-[11px] text-white/70">動作已成功完成。</p>
+    </div>
+  </div>
+
+  <script>
+    const GAME_VERSIONS = [
+      {
+        id: "v1",
+        tag: "v0.0.1",
+        name: "裂縫深淵：第一個可用版本",
+        sourceType: "local",
+        path: "html/alpha1.html",
+        projectId: "",
+        date: "2026-05-24",
+        branch: "內部測試版(Alpha版)",
+        changelog: [
+          "只包含移動的超簡易版本"
+        ]
+      }
+    ];
+
+    let selectedVersionId = "v1";
+
+    window.onload = function() {
+      renderVersionSidebar();
+      updateDisplayUI();
+    };
+
+    function renderVersionSidebar() {
+      const container = document.getElementById("version-sidebar-container");
+      container.innerHTML = "";
+
+      GAME_VERSIONS.forEach(ver => {
+        const isActive = ver.id === selectedVersionId;
+        const btn = document.createElement("button");
+        btn.onclick = () => selectVersion(ver.id);
+        
+        if (isActive) {
+          btn.className = "w-full flex flex-col text-left p-3.5 rounded-xl border border-neutral-800 bg-neutral-900 shadow-sm text-white font-bold border-l-4 border-l-brandYellow-500 transition-all cursor-pointer flex-shrink-0";
+        } else {
+          btn.className = "w-full flex flex-col text-left p-3.5 rounded-xl border border-transparent bg-transparent hover:bg-neutral-800/50 text-neutral-400 hover:text-white transition-all cursor-pointer flex-shrink-0";
+        }
+
+        btn.innerHTML = `
+          <div class="flex items-center justify-between w-full mb-1 pointer-events-none">
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded ${isActive ? 'bg-brandYellow-500 text-header-900 font-extrabold' : 'bg-neutral-800 text-neutral-300'}">${ver.tag}</span>
+            <span class="text-[9px] ${isActive ? 'text-brandYellow-400/80' : 'text-neutral-500'}">${ver.date}</span>
+          </div>
+          <span class="text-xs truncate w-full pointer-events-none ${isActive ? 'text-white font-extrabold' : 'text-neutral-300'}">${ver.name}</span>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleSidebar(open) {
+      const sidebar = document.getElementById("large-sidebar");
+      const backdrop = document.getElementById("sidebar-backdrop");
+
+      if (open) {
+        backdrop.classList.remove("hidden");
+        setTimeout(() => {
+          backdrop.classList.add("opacity-100");
+          sidebar.classList.remove("-translate-x-full");
+        }, 10);
+      } else {
+        sidebar.classList.add("-translate-x-full");
+        backdrop.classList.remove("opacity-100");
+        setTimeout(() => {
+          backdrop.classList.add("hidden");
+        }, 300);
+      }
+    }
+
+    function selectVersion(id) {
+      selectedVersionId = id;
+      renderVersionSidebar();
+      updateDisplayUI();
+      
+      const ver = GAME_VERSIONS.find(v => v.id === selectedVersionId);
+      showToast("切換版本成功", `已成功切換至 ${ver.tag}`);
+
+      if (window.innerWidth < 1024) {
+        toggleSidebar(false);
+      }
+    }
+
+    function updateDisplayUI() {
+      const ver = GAME_VERSIONS.find(v => v.id === selectedVersionId);
+      if (!ver) return;
+
+      document.getElementById("display-version-title").innerText = ver.name;
+      document.getElementById("display-version-branch").innerText = ver.branch;
+      document.getElementById("display-version-date").innerText = `更新日期：${ver.date}`;
+
+      const pathLabel = document.getElementById("display-version-path");
+      if (ver.sourceType === "local") {
+        pathLabel.innerText = `[相對路徑] ./${ver.path}`;
+      } else if (ver.sourceType === "sb3") {
+        pathLabel.innerText = `[遊戲檔案] ./${ver.path}`;
+      } else {
+        pathLabel.innerText = `[線上 ID] ${ver.projectId}`;
+      }
+
+      const changelogContainer = document.getElementById("display-version-changelog");
+      changelogContainer.innerHTML = "";
+      ver.changelog.forEach(line => {
+        const li = document.createElement("li");
+        li.innerText = line;
+        changelogContainer.appendChild(li);
+      });
+
+      document.getElementById("launch-card-ver-name").innerText = ver.name;
+      document.getElementById("launch-card-ver-tag").innerText = ver.tag;
+    }
+
+    function getAbsoluteUrl(relativePath) {
+      try {
+        let base = window.location.href;
+        if (base.startsWith('blob:')) {
+          const match = base.match(/blob:(https?:\/\/[^\/]+)/);
+          if (match && match[1]) {
+            base = match[1] + '/';
+          } else {
+            base = window.location.origin + '/';
+          }
+        }
+        return new URL(relativePath, base).href;
+      } catch (e) {
+        return window.location.origin + '/' + relativePath;
+      }
+    }
+
+    function launchGame() {
+      const ver = GAME_VERSIONS.find(v => v.id === selectedVersionId);
+      if (!ver) {
+        showToast("啟動失敗", "找不到選擇的版本資料", true);
+        return;
+      }
+
+      let iframeUrl = "";
+
+      if (ver.sourceType === "local") {
+        iframeUrl = ver.path;
+      } else if (ver.sourceType === "sb3") {
+        const absoluteSb3Url = getAbsoluteUrl(ver.path);
+        iframeUrl = `https://turbowarp.org/embed.html?load=${encodeURIComponent(absoluteSb3Url)}&interpolate=1&clones=Infinity&stuck=1&fps=60`;
+      } else if (ver.sourceType === "online") {
+        iframeUrl = `https://turbowarp.org/projects/${ver.projectId}/embed?interpolate=1&clones=Infinity&stuck=1&fps=60`;
+      }
+
+      document.getElementById("player-game-title").innerText = ver.name;
+      document.getElementById("player-game-version-badge").innerText = ver.tag;
+
+      document.getElementById("player-loading-overlay").classList.remove("hidden");
+      const iframe = document.getElementById("turbowarp-iframe");
+      iframe.src = iframeUrl;
+
+      iframe.onload = function() {
+        document.getElementById("player-loading-overlay").classList.add("hidden");
+      };
+
+      document.getElementById("game-player-screen").classList.remove("hidden");
+    }
+
+    function closeGamePlayer() {
+      document.getElementById("game-player-screen").classList.add("hidden");
+      document.getElementById("turbowarp-iframe").src = "about:blank";
+      showToast("已關閉遊戲", "期待您的下次遊玩！");
+    }
+
+    let toastTimeout = null;
+    function showToast(title, desc, isError = false) {
+      const toast = document.getElementById("custom-toast");
+      const iconWrap = document.getElementById("toast-icon-wrapper");
+      
+      document.getElementById("toast-title").innerText = title;
+      document.getElementById("toast-desc").innerText = desc;
+
+      if (isError) {
+        iconWrap.className = "w-8 h-8 rounded-full flex items-center justify-center text-sm bg-red-500/20 text-red-400 border border-red-500/50 flex-shrink-0";
+        iconWrap.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
+      } else {
+        iconWrap.className = "w-8 h-8 rounded-full flex items-center justify-center text-sm bg-brandYellow-500 text-header-900 shadow-[0_0_10px_rgba(245,158,11,0.5)] flex-shrink-0";
+        iconWrap.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+      }
+
+      toast.classList.remove("translate-y-24", "opacity-0");
+      toast.classList.add("translate-y-0", "opacity-100");
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      
+      toastTimeout = setTimeout(() => {
+        toast.classList.add("translate-y-24", "opacity-0");
+        toast.classList.remove("translate-y-0", "opacity-100");
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
