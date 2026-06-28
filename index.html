@@ -89,10 +89,13 @@
       pointer-events: none;
     }
 
-    /* 測試光球的移動動畫 */
-    @keyframes sweepLight {
-      0% { transform: translateX(-20vw) scale(0.8); }
-      100% { transform: translateX(80vw) scale(1.2); }
+    /* 測試光球的無規則漂浮動畫 */
+    @keyframes floatDrift {
+      0% { transform: translate(-10vw, 5vh) scale(0.8); }
+      25% { transform: translate(30vw, -15vh) scale(1.1); }
+      50% { transform: translate(70vw, 10vh) scale(0.9); }
+      75% { transform: translate(40vw, 25vh) scale(1.2); }
+      100% { transform: translate(-10vw, 5vh) scale(0.8); }
     }
   </style>
 </head>
@@ -101,7 +104,7 @@
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
     <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 40px 40px;"></div>
     
-    <div class="absolute top-1/4 left-0 w-[40vw] h-[40vw] bg-brandYellow-500/60 rounded-full blur-[80px]" style="animation: sweepLight 5s infinite alternate ease-in-out;"></div>
+    <div class="absolute top-1/4 left-0 w-[40vw] h-[40vw] bg-brandYellow-500/50 rounded-full blur-[80px]" style="animation: floatDrift 15s infinite ease-in-out;"></div>
   </div>
 
   <header class="bg-header-900/80 backdrop-blur-md text-header-text border-b border-header-800 px-4 sm:px-6 py-4 flex items-center justify-between shadow-md z-20 flex-shrink-0 rounded-t-3xl mt-2 mx-2">
