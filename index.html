@@ -28,64 +28,62 @@
     }
   </script>
   <style>
-    /* 隱藏滾動條但保留功能 */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    /* 隱藏滾動條 */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* ================= 極致清透液態玻璃 ================= */
+    /* ================= 真實畸變：清透凸透鏡液態玻璃 ================= */
     .liquid-glass {
       position: relative;
       overflow: hidden;
       
-      /* 極低透明度底色，提升通透感 */
-      background: linear-gradient(
-        135deg, 
-        rgba(255, 255, 255, 0.06) 0%, 
-        rgba(255, 255, 255, 0.0) 100%
-      );
+      /* 極致透明，不干擾閱讀 */
+      background: rgba(255, 255, 255, 0.03);
 
-      /* 拔除厚重高光！只保留最細的 1px 邊緣光澤與柔和陰影 */
+      /* 拔除厚實高光，只留下邊緣最細銳的 1px 反光，與微微的實體陰影 */
       box-shadow: 
-        inset 1px 1px 1px rgba(255, 255, 255, 0.4),
-        inset -1px -1px 2px rgba(0, 0, 0, 0.1),
-        0 10px 30px rgba(0, 0, 0, 0.4);
+        inset 1px 1px 1px rgba(255, 255, 255, 0.35),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.2),
+        0 15px 35px rgba(0, 0, 0, 0.4);
 
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 2rem; 
       
-      /* 大幅降低模糊度(blur)，保留高對比以確保內部文字清晰 */
-      backdrop-filter: blur(4px) saturate(150%) contrast(105%);
-      -webkit-backdrop-filter: blur(4px) saturate(150%) contrast(105%);
+      /* 核心：呼叫 SVG 進行真實物理扭曲，搭配輕微模糊與高對比保持字體清晰 */
+      backdrop-filter: url(#glass-distortion) blur(6px) saturate(150%) contrast(110%);
+      -webkit-backdrop-filter: blur(10px) saturate(150%) contrast(110%); /* Safari 備用方案 */
     }
 
-    /* 光球 1 呼吸漂浮動畫 */
+    /* 光球的流暢漂浮動畫 */
     @keyframes floatDrift1 {
       0%, 100% { transform: translate(0, 0) scale(0.9); }
       50% { transform: translate(35vw, -15vh) scale(1.1); }
     }
-    
-    /* 光球 2 呼吸漂浮動畫 */
     @keyframes floatDrift2 {
       0%, 100% { transform: translate(0, 0) scale(1.1); }
       50% { transform: translate(-30vw, 20vh) scale(0.9); }
     }
   </style>
 </head>
-<body class="bg-[#0a0a0c] text-neutral-100 font-sans h-full flex flex-col select-none overflow-hidden relative z-0 pb-[env(safe-area-inset-bottom)]">
+<body class="bg-[#050508] text-neutral-100 font-sans h-full flex flex-col select-none overflow-hidden relative z-0 pb-[env(safe-area-inset-bottom)]">
+
+  <svg class="hidden absolute w-0 h-0 pointer-events-none">
+    <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" result="noise" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" in="noise" result="coloredNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="coloredNoise" scale="18" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
 
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-    <div class="absolute top-1/4 left-1/4 w-[60vw] h-[60vw] sm:w-[40vw] sm:h-[40vw] bg-brandYellow-500/40 rounded-full blur-[80px]" style="animation: floatDrift1 20s ease-in-out infinite;"></div>
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-1/4 left-1/4 w-[60vw] h-[60vw] sm:w-[40vw] sm:h-[40vw] bg-brandYellow-500/30 rounded-full blur-[80px]" style="animation: floatDrift1 20s ease-in-out infinite;"></div>
     <div class="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vw] sm:w-[30vw] sm:h-[30vw] bg-blue-600/20 rounded-full blur-[100px]" style="animation: floatDrift2 25s ease-in-out infinite;"></div>
   </div>
 
-  <header class="bg-header-900/80 backdrop-blur-md text-header-text border-b border-header-800 px-4 sm:px-6 py-3.5 flex items-center justify-between shadow-md z-20 flex-shrink-0 rounded-t-2xl sm:rounded-t-3xl mt-2 mx-2 sm:mt-3 sm:mx-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+  <header class="bg-header-900/60 backdrop-blur-xl text-header-text border-b border-header-800/50 px-4 sm:px-6 py-3.5 flex items-center justify-between shadow-md z-20 flex-shrink-0 rounded-t-2xl sm:rounded-t-3xl mt-2 mx-2 sm:mt-3 sm:mx-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
     <div class="flex items-center space-x-3">
-      <button onclick="toggleSidebar(true)" class="lg:hidden text-white hover:text-brandYellow-400 p-2 -ml-1 rounded-xl focus:outline-none transition cursor-pointer" title="開啟選單">
+      <button onclick="toggleSidebar(true)" class="lg:hidden text-white hover:text-brandYellow-400 p-2 -ml-1 rounded-xl focus:outline-none transition cursor-pointer touch-manipulation">
         <i class="fa-solid fa-bars text-lg sm:text-xl"></i>
       </button>
       <div class="flex items-center space-x-2.5">
@@ -100,26 +98,26 @@
   </header>
 
   <div class="flex-1 flex relative overflow-hidden px-2 sm:px-3 pb-2 sm:pb-3">
-    <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/70 z-30 hidden transition-opacity duration-300 opacity-0 lg:hidden backdrop-blur-sm"></div>
+    <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/60 z-30 hidden transition-opacity duration-300 opacity-0 lg:hidden backdrop-blur-sm touch-manipulation"></div>
 
-    <aside id="large-sidebar" class="fixed inset-y-0 left-0 w-[75vw] max-w-[320px] sm:w-80 bg-neutral-950/95 border-r border-neutral-800 z-40 transform -translate-x-full lg:translate-x-0 lg:static lg:w-72 xl:w-80 flex-shrink-0 flex flex-col justify-between transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none text-neutral-300 rounded-r-2xl sm:rounded-r-3xl overflow-hidden pt-[env(safe-area-inset-top)]">
-      <div class="p-4 sm:p-5 border-b border-neutral-800 flex flex-col space-y-3 sm:space-y-4 flex-shrink-0">
+    <aside id="large-sidebar" class="fixed inset-y-0 left-0 w-[75vw] max-w-[320px] sm:w-80 bg-neutral-950/80 backdrop-blur-2xl border-r border-neutral-800/50 z-40 transform -translate-x-full lg:translate-x-0 lg:static flex-shrink-0 flex flex-col justify-between transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none text-neutral-300 rounded-r-2xl sm:rounded-r-3xl overflow-hidden pt-[env(safe-area-inset-top)]">
+      <div class="p-4 sm:p-5 border-b border-neutral-800/50 flex flex-col space-y-3 sm:space-y-4 flex-shrink-0">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2">
             <i class="fa-solid fa-code-branch text-brandYellow-500 text-sm"></i>
             <h3 class="text-sm font-bold text-white uppercase tracking-wider">選擇遊戲版本</h3>
           </div>
-          <button onclick="toggleSidebar(false)" class="lg:hidden text-neutral-400 hover:text-white p-2 -mr-2 rounded-xl transition cursor-pointer" title="關閉選單">
+          <button onclick="toggleSidebar(false)" class="lg:hidden text-neutral-400 hover:text-white p-2 -mr-2 rounded-xl transition cursor-pointer touch-manipulation">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
-        <p class="text-[10px] sm:text-[11px] text-neutral-400 leading-relaxed">請在下方選單中點選遊戲版本，啟動器將會自動讀取 GitHub 儲存庫對應的檔案路徑。</p>
+        <p class="text-[10px] sm:text-[11px] text-neutral-400 leading-relaxed">請在下方選單中點選版本，將自動讀取 GitHub 儲存庫對應路徑。</p>
       </div>
 
-      <div id="version-sidebar-container" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5 no-scrollbar bg-neutral-900/20 pb-[env(safe-area-inset-bottom)]">
-        </div>
+      <div id="version-sidebar-container" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5 no-scrollbar pb-[env(safe-area-inset-bottom)]">
+      </div>
 
-      <div class="p-3 sm:p-4 bg-neutral-950 border-t border-neutral-800 text-center text-[10px] text-neutral-500 flex-shrink-0 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] lg:pb-4">
+      <div class="p-3 sm:p-4 bg-black/40 border-t border-neutral-800/50 text-center text-[10px] text-neutral-500 flex-shrink-0 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] lg:pb-4">
         <p>© 2026 裂縫深淵</p>
       </div>
     </aside>
@@ -129,28 +127,25 @@
         
         <div class="md:col-span-7 liquid-glass p-4 sm:p-5 lg:p-6 flex flex-col justify-between space-y-4 sm:space-y-5 text-white">
           <div>
-            <div class="pb-3 border-b border-white/20">
+            <div class="pb-3 border-b border-white/10">
               <h2 class="text-base sm:text-lg font-bold flex items-center space-x-2">
                 <i class="fa-solid fa-circle-info text-white/70"></i>
                 <span>遊戲版本介紹</span>
               </h2>
             </div>
-
             <div class="mt-3 sm:mt-4 space-y-3">
               <div class="flex items-center space-x-2 flex-wrap gap-y-1">
                 <span id="display-version-title" class="text-sm sm:text-md font-bold text-white">載入中...</span>
-                <span id="display-version-branch" class="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-bold bg-white/10 border border-white/20 text-white/90">分支</span>
+                <span id="display-version-branch" class="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-bold bg-white/10 border border-white/10 text-white/90">分支</span>
               </div>
-              
-              <div class="bg-black/20 rounded-2xl p-3 sm:p-4 border border-white/10 shadow-inner">
+              <div class="bg-black/20 rounded-2xl p-3 sm:p-4 border border-white/5 shadow-inner">
                 <h4 class="text-[11px] sm:text-xs font-bold text-white/90 uppercase tracking-wide mb-1.5 sm:mb-2">更新說明與更動項目：</h4>
                 <ul id="display-version-changelog" class="list-disc pl-4 sm:pl-5 text-[11px] sm:text-xs text-white/70 space-y-1 sm:space-y-1.5 leading-relaxed">
-                  </ul>
+                </ul>
               </div>
             </div>
           </div>
-
-          <div class="text-[10px] sm:text-[11px] text-white/50 pt-3 border-t border-white/20 flex items-center space-x-1.5 flex-wrap gap-y-1">
+          <div class="text-[10px] sm:text-[11px] text-white/50 pt-3 border-t border-white/10 flex items-center space-x-1.5 flex-wrap gap-y-1">
             <i class="fa-solid fa-folder-open text-brandYellow-500"></i>
             <span id="display-version-path" class="font-mono bg-black/30 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg text-[9px] sm:text-[10px] text-white/70">路徑：--</span>
             <span id="display-version-date" class="ml-auto text-[9px] sm:text-[10px]">更新日期：----/--/--</span>
@@ -158,19 +153,19 @@
         </div>
 
         <div class="md:col-span-5 liquid-glass p-5 sm:p-6 lg:p-8 flex flex-col justify-center items-center text-center relative overflow-hidden min-h-[200px] sm:min-h-[220px] md:min-h-auto text-white">
-          <div class="absolute -right-6 -bottom-6 opacity-[0.04] text-[100px] sm:text-[150px] pointer-events-none text-white"><i class="fa-solid fa-gamepad"></i></div>
+          <div class="absolute -right-6 -bottom-6 opacity-[0.03] text-[100px] sm:text-[150px] pointer-events-none text-white"><i class="fa-solid fa-gamepad"></i></div>
 
-          <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-3xl bg-white/5 flex items-center justify-center text-brandYellow-500 mb-3 sm:mb-4 shadow-inner border border-white/10">
+          <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-3xl bg-white/5 flex items-center justify-center text-brandYellow-500 mb-3 sm:mb-4 border border-white/10">
             <i class="fa-solid fa-rocket text-xl sm:text-2xl drop-shadow-md"></i>
           </div>
 
           <div class="space-y-1 mb-5 sm:mb-6 lg:mb-8 z-10 w-full">
             <h3 class="text-[9px] sm:text-[10px] font-bold text-white/50 uppercase tracking-widest">當前選擇版本</h3>
             <p id="launch-card-ver-name" class="text-sm sm:text-md font-bold text-white truncate px-2">載入中...</p>
-            <span id="launch-card-ver-tag" class="inline-block text-[9px] sm:text-[10px] font-mono bg-white/10 px-2 py-0.5 rounded-lg text-white/80 border border-white/20 font-semibold mt-1">v0.0.0</span>
+            <span id="launch-card-ver-tag" class="inline-block text-[9px] sm:text-[10px] font-mono bg-white/10 px-2 py-0.5 rounded-lg text-white/80 border border-white/10 font-semibold mt-1">v0.0.0</span>
           </div>
 
-          <button onclick="launchGame()" class="w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-brandYellow-500 active:bg-brandYellow-600 text-neutral-900 font-extrabold rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all transform active:scale-95 flex items-center justify-center space-x-2 sm:space-x-2.5 text-sm sm:text-base lg:text-lg z-30 relative cursor-pointer touch-manipulation">
+          <button onclick="launchGame()" class="w-full py-3 sm:py-3.5 px-4 sm:px-6 bg-brandYellow-500 active:bg-brandYellow-600 text-neutral-900 font-extrabold rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all transform active:scale-95 flex items-center justify-center space-x-2 sm:space-x-2.5 text-sm sm:text-base lg:text-lg z-30 cursor-pointer touch-manipulation">
             <i class="fa-solid fa-circle-play text-lg sm:text-xl"></i>
             <span>開始遊戲</span>
           </button>
@@ -182,21 +177,21 @@
     </main>
   </div>
 
-  <div id="game-player-screen" class="fixed inset-0 bg-black z-50 flex flex-col transition-all duration-500 ease-out opacity-0 pointer-events-none translate-y-10 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
-    <div class="h-12 sm:h-14 bg-header-900 border-b border-header-800 flex items-center justify-between px-3 sm:px-4 z-10 text-header-text flex-shrink-0 rounded-b-xl sm:rounded-b-2xl mt-1 sm:mt-2 mx-1 sm:mx-2 pt-[env(safe-area-inset-top)]">
+  <div id="game-player-screen" class="fixed inset-0 bg-[#050508] z-50 flex flex-col transition-all duration-500 ease-out opacity-0 pointer-events-none translate-y-10 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+    <div class="h-12 sm:h-14 bg-header-900/80 backdrop-blur-md border-b border-header-800/50 flex items-center justify-between px-3 sm:px-4 z-10 text-header-text flex-shrink-0 rounded-b-xl sm:rounded-b-2xl mt-1 sm:mt-2 mx-1 sm:mx-2 pt-[env(safe-area-inset-top)]">
       <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
         <span id="player-game-title" class="font-bold text-white text-[11px] sm:text-sm tracking-wide truncate max-w-[150px] sm:max-w-[240px]">載入中...</span>
-        <span id="player-game-version-badge" class="text-[9px] sm:text-[10px] bg-header-800 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-gray-300 font-mono flex-shrink-0">v0.0</span>
+        <span id="player-game-version-badge" class="text-[9px] sm:text-[10px] bg-white/10 border border-white/10 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-gray-300 font-mono flex-shrink-0">v0.0</span>
       </div>
       <div class="flex items-center space-x-1.5 sm:space-x-2">
-        <button onclick="closeGamePlayer()" class="bg-red-950 hover:bg-red-900 text-red-200 hover:text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center space-x-1.5 cursor-pointer touch-manipulation">
+        <button onclick="closeGamePlayer()" class="bg-red-900/80 hover:bg-red-800 text-red-100 hover:text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center space-x-1.5 cursor-pointer touch-manipulation">
           <i class="fa-solid fa-power-off"></i>
           <span>結束</span>
         </button>
       </div>
     </div>
     <div class="flex-1 bg-black relative flex items-center justify-center min-h-0 mx-1 sm:mx-2 mb-1 sm:mb-2 rounded-xl sm:rounded-2xl overflow-hidden pb-[env(safe-area-inset-bottom)]">
-      <div id="player-loading-overlay" class="absolute inset-0 bg-neutral-900 flex flex-col items-center justify-center space-y-3 sm:space-y-4 z-20">
+      <div id="player-loading-overlay" class="absolute inset-0 bg-neutral-900 flex flex-col items-center justify-center space-y-3 sm:space-y-4 z-20 transition-opacity duration-300">
         <div class="w-8 h-8 sm:w-10 sm:h-10 border-4 border-brandYellow-500 border-t-transparent rounded-full animate-spin"></div>
         <p class="text-[10px] sm:text-xs text-gray-400">正在加載遊戲與引擎資源...</p>
       </div>
@@ -204,7 +199,7 @@
     </div>
   </div>
 
-  <div id="custom-toast" class="fixed bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] right-4 left-4 sm:right-6 sm:left-auto liquid-glass border border-white/20 shadow-2xl p-3 sm:p-4 flex items-center space-x-3 translate-y-24 opacity-0 transition-all duration-300 z-50 text-white max-w-sm rounded-2xl">
+  <div id="custom-toast" class="fixed bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] right-4 left-4 sm:right-6 sm:left-auto liquid-glass border border-white/20 p-3 sm:p-4 flex items-center space-x-3 translate-y-24 opacity-0 transition-all duration-300 z-50 text-white max-w-sm rounded-2xl">
     <div id="toast-icon-wrapper" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm flex-shrink-0 bg-brandYellow-500 text-header-900">
       <i class="fa-solid fa-circle-check"></i>
     </div>
@@ -248,14 +243,14 @@
         btn.onclick = () => selectVersion(ver.id);
         
         if (isActive) {
-          btn.className = "w-full flex flex-col text-left p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-neutral-800 bg-neutral-900 shadow-sm text-white font-bold border-l-4 border-l-brandYellow-500 transition-all cursor-pointer flex-shrink-0 touch-manipulation";
+          btn.className = "w-full flex flex-col text-left p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-white/10 bg-white/10 shadow-sm text-white font-bold border-l-4 border-l-brandYellow-500 transition-all cursor-pointer flex-shrink-0 touch-manipulation";
         } else {
-          btn.className = "w-full flex flex-col text-left p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-transparent bg-transparent hover:bg-neutral-800/50 text-neutral-400 hover:text-white transition-all cursor-pointer flex-shrink-0 touch-manipulation";
+          btn.className = "w-full flex flex-col text-left p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-transparent bg-transparent hover:bg-white/5 text-neutral-400 hover:text-white transition-all cursor-pointer flex-shrink-0 touch-manipulation";
         }
 
         btn.innerHTML = `
           <div class="flex items-center justify-between w-full mb-1 pointer-events-none">
-            <span class="text-[9px] sm:text-[10px] font-mono px-2 py-0.5 rounded-md sm:rounded-lg ${isActive ? 'bg-brandYellow-500 text-header-900 font-extrabold' : 'bg-neutral-800 text-neutral-300'}">${ver.tag}</span>
+            <span class="text-[9px] sm:text-[10px] font-mono px-2 py-0.5 rounded-md sm:rounded-lg ${isActive ? 'bg-brandYellow-500 text-header-900 font-extrabold' : 'bg-black/30 text-neutral-300'}">${ver.tag}</span>
             <span class="text-[8px] sm:text-[9px] ${isActive ? 'text-brandYellow-400/80' : 'text-neutral-500'}">${ver.date}</span>
           </div>
           <span class="text-[11px] sm:text-xs truncate w-full pointer-events-none ${isActive ? 'text-white font-extrabold' : 'text-neutral-300'}">${ver.name}</span>
@@ -284,6 +279,7 @@
     }
 
     function selectVersion(id) {
+      if(selectedVersionId === id) return;
       selectedVersionId = id;
       renderVersionSidebar();
       updateDisplayUI();
@@ -330,11 +326,7 @@
         let base = window.location.href;
         if (base.startsWith('blob:')) {
           const match = base.match(/blob:(https?:\/\/[^\/]+)/);
-          if (match && match[1]) {
-            base = match[1] + '/';
-          } else {
-            base = window.location.origin + '/';
-          }
+          base = (match && match[1]) ? match[1] + '/' : window.location.origin + '/';
         }
         return new URL(relativePath, base).href;
       } catch (e) {
@@ -342,7 +334,7 @@
       }
     }
 
-    // 動畫觸發：開啟遊戲
+    // 啟動遊戲並觸發浮現動畫
     function launchGame() {
       const ver = GAME_VERSIONS.find(v => v.id === selectedVersionId);
       if (!ver) {
@@ -351,52 +343,48 @@
       }
 
       let iframeUrl = "";
-
       if (ver.sourceType === "local") {
         iframeUrl = ver.path;
       } else if (ver.sourceType === "sb3") {
-        const absoluteSb3Url = getAbsoluteUrl(ver.path);
-        iframeUrl = `https://turbowarp.org/embed.html?load=${encodeURIComponent(absoluteSb3Url)}&interpolate=1&clones=Infinity&stuck=1&fps=60`;
+        iframeUrl = `https://turbowarp.org/embed.html?load=${encodeURIComponent(getAbsoluteUrl(ver.path))}&interpolate=1&clones=Infinity&stuck=1&fps=60`;
       } else if (ver.sourceType === "online") {
         iframeUrl = `https://turbowarp.org/projects/${ver.projectId}/embed?interpolate=1&clones=Infinity&stuck=1&fps=60`;
       }
 
       document.getElementById("player-game-title").innerText = ver.name;
       document.getElementById("player-game-version-badge").innerText = ver.tag;
-
-      document.getElementById("player-loading-overlay").classList.remove("hidden");
+      
+      const overlay = document.getElementById("player-loading-overlay");
+      overlay.classList.remove("opacity-0", "pointer-events-none");
+      
       const iframe = document.getElementById("turbowarp-iframe");
       iframe.src = iframeUrl;
-
       iframe.onload = function() {
-        document.getElementById("player-loading-overlay").classList.add("hidden");
+        overlay.classList.add("opacity-0", "pointer-events-none");
       };
 
-      // 觸發淡入並往上浮現的動畫
       const playerScreen = document.getElementById("game-player-screen");
       playerScreen.classList.remove("hidden");
       
-      // 使用很短的延遲確保 CSS transition 能被正確觸發
-      setTimeout(() => {
+      // 確保 CSS 渲染更新後再執行過渡動畫
+      requestAnimationFrame(() => {
         playerScreen.classList.remove("opacity-0", "pointer-events-none", "translate-y-10");
         playerScreen.classList.add("opacity-100", "pointer-events-auto", "translate-y-0");
-      }, 10);
+      });
     }
 
-    // 動畫觸發：關閉遊戲
+    // 關閉遊戲並觸發下沉動畫
     function closeGamePlayer() {
       const playerScreen = document.getElementById("game-player-screen");
       
-      // 觸發淡出並往下沉的動畫
       playerScreen.classList.remove("opacity-100", "pointer-events-auto", "translate-y-0");
       playerScreen.classList.add("opacity-0", "pointer-events-none", "translate-y-10");
       
-      // 等待動畫播放完畢 (500ms) 後，再將畫面清空隱藏
       setTimeout(() => {
         playerScreen.classList.add("hidden");
         document.getElementById("turbowarp-iframe").src = "about:blank";
-        showToast("已關閉遊戲", "期待您的下次遊玩！");
-      }, 500);
+        showToast("已關閉遊戲", "期待下次遊玩！");
+      }, 500); // 對應 duration-500
     }
 
     let toastTimeout = null;
@@ -419,7 +407,6 @@
       toast.classList.add("translate-y-0", "opacity-100");
 
       if (toastTimeout) clearTimeout(toastTimeout);
-      
       toastTimeout = setTimeout(() => {
         toast.classList.add("translate-y-24", "opacity-0");
         toast.classList.remove("translate-y-0", "opacity-100");
