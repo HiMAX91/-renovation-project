@@ -32,29 +32,29 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* ================= 真實畸變：清透凸透鏡液態玻璃 ================= */
+    /* ================= 真實強效畸變：清透凸透鏡液態玻璃 ================= */
     .liquid-glass {
       position: relative;
       overflow: hidden;
       
-      /* 極致透明，不干擾閱讀 */
-      background: rgba(255, 255, 255, 0.03);
+      /* 極致透明底色 */
+      background: rgba(255, 255, 255, 0.02);
 
-      /* 拔除厚實高光，只留下邊緣最細銳的 1px 反光，與微微的實體陰影 */
+      /* 精緻細薄的 1px 邊緣高光，絕不厚重假白 */
       box-shadow: 
-        inset 1px 1px 1px rgba(255, 255, 255, 0.35),
-        inset -1px -1px 2px rgba(0, 0, 0, 0.2),
-        0 15px 35px rgba(0, 0, 0, 0.4);
+        inset 1px 1px 1px rgba(255, 255, 255, 0.4),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.3),
+        0 20px 45px rgba(0, 0, 0, 0.5);
 
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 2rem; 
       
-      /* 核心：呼叫 SVG 進行真實物理扭曲，搭配輕微模糊與高對比保持字體清晰 */
-      backdrop-filter: url(#glass-distortion) blur(6px) saturate(150%) contrast(110%);
-      -webkit-backdrop-filter: blur(10px) saturate(150%) contrast(110%); /* Safari 備用方案 */
+      /* 核心：掛載大強度 SVG 扭曲引擎，搭配微幅模糊與對比度，凸顯幾何錯位 */
+      backdrop-filter: url(#extreme-lens-distortion) blur(4px) saturate(160%) contrast(115%);
+      -webkit-backdrop-filter: blur(8px) saturate(160%) contrast(115%); /* Safari 退修方案 */
     }
 
-    /* 光球的流暢漂浮動畫 */
+    /* 背景光球流暢呼吸漂浮動畫 */
     @keyframes floatDrift1 {
       0%, 100% { transform: translate(0, 0) scale(0.9); }
       50% { transform: translate(35vw, -15vh) scale(1.1); }
@@ -65,23 +65,23 @@
     }
   </style>
 </head>
-<body class="bg-[#050508] text-neutral-100 font-sans h-full flex flex-col select-none overflow-hidden relative z-0 pb-[env(safe-area-inset-bottom)]">
+<body class="bg-[#040406] text-neutral-100 font-sans h-full flex flex-col select-none overflow-hidden relative z-0 pb-[env(safe-area-inset-bottom)]">
 
   <svg class="hidden absolute w-0 h-0 pointer-events-none">
-    <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="2" result="noise" />
-      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" in="noise" result="coloredNoise" />
-      <feDisplacementMap in="SourceGraphic" in2="coloredNoise" scale="18" xChannelSelector="R" yChannelSelector="G" />
+    <filter id="extreme-lens-distortion" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.003" numOctaves="2" result="noise" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.6 0" in="noise" result="heavyNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="heavyNoise" scale="65" xChannelSelector="R" yChannelSelector="G" />
     </filter>
   </svg>
 
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-[-1]">
-    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 40px 40px;"></div>
-    <div class="absolute top-1/4 left-1/4 w-[60vw] h-[60vw] sm:w-[40vw] sm:h-[40vw] bg-brandYellow-500/30 rounded-full blur-[80px]" style="animation: floatDrift1 20s ease-in-out infinite;"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vw] sm:w-[30vw] sm:h-[30vw] bg-blue-600/20 rounded-full blur-[100px]" style="animation: floatDrift2 25s ease-in-out infinite;"></div>
+    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-1/4 left-1/4 w-[65vw] h-[65vw] sm:w-[45vw] sm:h-[45vw] bg-brandYellow-500/35 rounded-full blur-[90px]" style="animation: floatDrift1 18s ease-in-out infinite;"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[55vw] h-[55vw] sm:w-[35vw] sm:h-[35vw] bg-blue-600/25 rounded-full blur-[110px]" style="animation: floatDrift2 22s ease-in-out infinite;"></div>
   </div>
 
-  <header class="bg-header-900/60 backdrop-blur-xl text-header-text border-b border-header-800/50 px-4 sm:px-6 py-3.5 flex items-center justify-between shadow-md z-20 flex-shrink-0 rounded-t-2xl sm:rounded-t-3xl mt-2 mx-2 sm:mt-3 sm:mx-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+  <header class="bg-header-900/60 backdrop-blur-xl text-header-text border-b border-header-800/40 px-4 sm:px-6 py-3.5 flex items-center justify-between shadow-md z-20 flex-shrink-0 rounded-t-2xl sm:rounded-t-3xl mt-2 mx-2 sm:mt-3 sm:mx-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
     <div class="flex items-center space-x-3">
       <button onclick="toggleSidebar(true)" class="lg:hidden text-white hover:text-brandYellow-400 p-2 -ml-1 rounded-xl focus:outline-none transition cursor-pointer touch-manipulation">
         <i class="fa-solid fa-bars text-lg sm:text-xl"></i>
@@ -100,8 +100,8 @@
   <div class="flex-1 flex relative overflow-hidden px-2 sm:px-3 pb-2 sm:pb-3">
     <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/60 z-30 hidden transition-opacity duration-300 opacity-0 lg:hidden backdrop-blur-sm touch-manipulation"></div>
 
-    <aside id="large-sidebar" class="fixed inset-y-0 left-0 w-[75vw] max-w-[320px] sm:w-80 bg-neutral-950/80 backdrop-blur-2xl border-r border-neutral-800/50 z-40 transform -translate-x-full lg:translate-x-0 lg:static flex-shrink-0 flex flex-col justify-between transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none text-neutral-300 rounded-r-2xl sm:rounded-r-3xl overflow-hidden pt-[env(safe-area-inset-top)]">
-      <div class="p-4 sm:p-5 border-b border-neutral-800/50 flex flex-col space-y-3 sm:space-y-4 flex-shrink-0">
+    <aside id="large-sidebar" class="fixed inset-y-0 left-0 w-[75vw] max-w-[320px] sm:w-80 bg-neutral-950/80 backdrop-blur-2xl border-r border-neutral-800/40 z-40 transform -translate-x-full lg:translate-x-0 lg:static flex-shrink-0 flex flex-col justify-between transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none text-neutral-300 rounded-r-2xl sm:rounded-r-3xl overflow-hidden pt-[env(safe-area-inset-top)]">
+      <div class="p-4 sm:p-5 border-b border-neutral-800/40 flex flex-col space-y-3 sm:space-y-4 flex-shrink-0">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2">
             <i class="fa-solid fa-code-branch text-brandYellow-500 text-sm"></i>
@@ -117,7 +117,7 @@
       <div id="version-sidebar-container" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5 no-scrollbar pb-[env(safe-area-inset-bottom)]">
       </div>
 
-      <div class="p-3 sm:p-4 bg-black/40 border-t border-neutral-800/50 text-center text-[10px] text-neutral-500 flex-shrink-0 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] lg:pb-4">
+      <div class="p-3 sm:p-4 bg-black/40 border-t border-neutral-800/40 text-center text-[10px] text-neutral-500 flex-shrink-0 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] lg:pb-4">
         <p>© 2026 裂縫深淵</p>
       </div>
     </aside>
@@ -212,6 +212,21 @@
   <script>
     const GAME_VERSIONS = [
       {
+        id: "v2",
+        tag: "v0.0.2",
+        name: "裂縫深淵：第二個測試版",
+        sourceType: "local",
+        path: "html/alpha2.html",
+        projectId: "",
+        date: "2026-06-30",
+        branch: "內部測試版(Alpha版)",
+        changelog: [
+          "新增了物品欄系統",
+          "修復了移動卡頓的問題",
+          "更新了液態玻璃的折射引擎"
+        ]
+      },
+      {
         id: "v1",
         tag: "v0.0.1",
         name: "裂縫深淵：第一個可用版本",
@@ -226,7 +241,7 @@
       }
     ];
 
-    let selectedVersionId = "v1";
+    let selectedVersionId = "v2";
 
     window.onload = function() {
       renderVersionSidebar();
@@ -279,7 +294,6 @@
     }
 
     function selectVersion(id) {
-      if(selectedVersionId === id) return;
       selectedVersionId = id;
       renderVersionSidebar();
       updateDisplayUI();
@@ -334,7 +348,6 @@
       }
     }
 
-    // 啟動遊戲並觸發浮現動畫
     function launchGame() {
       const ver = GAME_VERSIONS.find(v => v.id === selectedVersionId);
       if (!ver) {
@@ -366,14 +379,12 @@
       const playerScreen = document.getElementById("game-player-screen");
       playerScreen.classList.remove("hidden");
       
-      // 確保 CSS 渲染更新後再執行過渡動畫
       requestAnimationFrame(() => {
         playerScreen.classList.remove("opacity-0", "pointer-events-none", "translate-y-10");
         playerScreen.classList.add("opacity-100", "pointer-events-auto", "translate-y-0");
       });
     }
 
-    // 關閉遊戲並觸發下沉動畫
     function closeGamePlayer() {
       const playerScreen = document.getElementById("game-player-screen");
       
@@ -384,7 +395,7 @@
         playerScreen.classList.add("hidden");
         document.getElementById("turbowarp-iframe").src = "about:blank";
         showToast("已關閉遊戲", "期待下次遊玩！");
-      }, 500); // 對應 duration-500
+      }, 500);
     }
 
     let toastTimeout = null;
